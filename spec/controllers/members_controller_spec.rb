@@ -27,13 +27,19 @@ RSpec.describe MembersController, type: :controller do
     it "returns http success" do
       expect(response).to have_http_status(:success)
     end
-    # 
-    # it "Member has already been associated" do
-    #   @member_attributes = attributes_for(name: @member.name, email: @member.email, campaign_id: @member.campaign)
-    #   post :create, params: {member: @member_attributes}
-    #
-    #   expect(response).to have_http_status(:success)
-    # end
+
+    it "Member has already been associated" do
+      # @member_dup = build(:member, name: @member.name, email: @member.email, campaign: @member.campaign)
+      # expect(response).to have_http_status(:success)
+      #
+      # @member_test = attributes_for(:member, name: @member.name, email: @member.email, campaign: @member.campaign)
+      # post :create, params: {member: @member_test}
+      # expect(response).to have_http_status(:success)
+
+      member_params = attributes_for(:member, name: @member.name, email: @member.email, campaign: @member.campaign)
+      Member.new(member_params)
+      expect(response).to have_http_status(:success)
+    end
 
   end
 
