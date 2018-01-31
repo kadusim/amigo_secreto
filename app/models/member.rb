@@ -3,6 +3,7 @@ class Member < ApplicationRecord
   after_save :set_campaign_pending
   after_destroy :set_campaign_pending
   validates :name, :email, :campaign, presence: true
+  validates_uniqueness_of :email, scope: :campaign, :message => 'Este e-mail já foi adicionado a campanha'
 
   def set_pixel
     self.open = false

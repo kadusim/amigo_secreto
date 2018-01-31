@@ -31,6 +31,9 @@ $(document).on 'turbolinks:load', ->
           Materialize.toast('Membro adicionado', 4000, 'green')
         error: (jqXHR, textStatus, errorThrown) ->
           Materialize.toast('Problema na hora de incluir membro', 4000, 'red')
+          responseText = jQuery.parseJSON(jqXHR.responseText)
+          if responseText['email']
+            Materialize.toast(responseText['email'], 4000, 'red')
     return false
 
 

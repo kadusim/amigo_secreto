@@ -28,17 +28,19 @@ RSpec.describe MembersController, type: :controller do
       expect(response).to have_http_status(:success)
     end
 
-    it "Member has already been associated" do
-      # @member_dup = build(:member, name: @member.name, email: @member.email, campaign: @member.campaign)
-      # expect(response).to have_http_status(:success)
-      #
-      # @member_test = attributes_for(:member, name: @member.name, email: @member.email, campaign: @member.campaign)
-      # post :create, params: {member: @member_test}
-      # expect(response).to have_http_status(:success)
+    context "Member has already been associated" do
+      before(:each) do
+        # @member_dup = create(:member, email: @member.email, campaign: @member.campaign)
+        @member_dup = build(:member, email: @member.email, campaign: @member.campaign)
+      end
 
-      member_params = attributes_for(:member, name: @member.name, email: @member.email, campaign: @member.campaign)
-      Member.new(member_params)
-      expect(response).to have_http_status(:success)
+      it "Email has already been associated" do
+        expect{@member_dup.save!}.to raise_error('Validation failed: Email Este e-mail já foi adicionado a campanha')
+      end
+
+      # it "returns http success" do
+      #   expect(response).to have_http_status(:unprocessable_entity)
+      # end
     end
 
   end
