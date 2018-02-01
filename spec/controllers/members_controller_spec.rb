@@ -11,7 +11,12 @@ RSpec.describe MembersController, type: :controller do
 
   describe "#POST #create" do
     before(:each) do
-      @member = create(:member)
+      @campaign = create(:campaign, user: @current_user)
+      @member = create(:member, campaign: @campaign)
+    end
+
+    it "returns http success" do
+      expect(response).to have_http_status(:success)
     end
 
     it "Create member with right attributes" do
@@ -24,23 +29,14 @@ RSpec.describe MembersController, type: :controller do
       expect(Member.last.campaign.id).to eql(@member.campaign.id)
     end
 
-    it "returns http success" do
-      expect(response).to have_http_status(:success)
-    end
-
     context "Member has already been associated" do
       before(:each) do
-        # @member_dup = create(:member, email: @member.email, campaign: @member.campaign)
         @member_dup = build(:member, email: @member.email, campaign: @member.campaign)
       end
 
       it "Email has already been associated" do
-        expect{@member_dup.save!}.to raise_error('Validation failed: Email Este e-mail já foi adicionado a campanha')
+        expect{@member_dup.save!}.to raise_error(ActiveRecord::RecordInvalid)
       end
-
-      # it "returns http success" do
-      #   expect(response).to have_http_status(:unprocessable_entity)
-      # end
     end
 
   end

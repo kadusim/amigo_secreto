@@ -44,15 +44,16 @@ gem 'sidekiq'
 gem 'inky-rb', require: 'inky'
 gem 'premailer-rails'
 
-group :test do
-  gem "factory_bot_rails"
-  gem "ffaker"
-end
-
 group :development, :test do
   gem 'rspec-rails', '~> 3.7'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
+end
+
+group :test do
+  gem "factory_bot_rails"
+  gem "ffaker"
+  gem 'shoulda-matchers', '~> 3.1'
 end
 
 group :development do
