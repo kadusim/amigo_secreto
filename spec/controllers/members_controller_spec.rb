@@ -3,16 +3,18 @@ require 'rails_helper'
 RSpec.describe MembersController, type: :controller do
   include Devise::Test::ControllerHelpers
 
-  before(:each) do
-    @request.env["devise.mapping"] = Devise.mappings[:user]
-    @current_user = FactoryBot.create(:user)
-    sign_in @current_user
-  end
-
   describe "#POST #create" do
+
     before(:each) do
+      @request.env["devise.mapping"] = Devise.mappings[:user]
+      @current_user = FactoryBot.create(:user)
+      sign_in @current_user
+
       @campaign = create(:campaign, user: @current_user)
-      @member = create(:member, campaign: @campaign)
+      @member = build(:member, campaign: @campaign)
+      post :create, params: {member: {name: @member.name, email: @member.email, campaign_id: @member.campaign_id}}
+
+      request.env["HTTP_ACCEPT"] = 'application/json'
     end
 
     it "returns http success" do
@@ -29,14 +31,13 @@ RSpec.describe MembersController, type: :controller do
       expect(Member.last.campaign.id).to eql(@member.campaign.id)
     end
 
-    context "Member has already been associated" do
-      before(:each) do
-        @member_dup = build(:member, email: @member.email, campaign: @member.campaign)
-      end
+    it "Email has already been associated" do
+      post :create, params: {member: {name: @member.name, email: @member.email, campaign_id: @member.campaign_id}}
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
 
-      it "Email has already been associated" do
-        expect{@member_dup.save!}.to raise_error(ActiveRecord::RecordInvalid)
-      end
+    xit "User is not Owner of Campaign" do
+      expect(response).to have_http_status(:forbidden)
     end
 
   end
