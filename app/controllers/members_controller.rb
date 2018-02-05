@@ -31,7 +31,6 @@ class MembersController < ApplicationController
   end
 
   def update
-    puts "****************************************upd"
     respond_to do |format|
       if @member.update(member_params)
         format.json { render json: true }
@@ -50,7 +49,6 @@ class MembersController < ApplicationController
   private
 
   def set_member
-    puts "****************************************set"
     @member = Member.find(params[:id])
   end
 
@@ -63,7 +61,6 @@ class MembersController < ApplicationController
   end
 
   def is_owner?
-    puts "****************************************is"
     unless current_user == @member.campaign.user
       respond_to do |format|
         format.json { render json: false, status: :forbidden }
@@ -73,7 +70,6 @@ class MembersController < ApplicationController
   end
 
   def is_owner_campaign?
-    puts "****************************************isc"
     params_aux = member_params
     campaign = Campaign.find(params_aux[:campaign_id])
     unless current_user == campaign.user

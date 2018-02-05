@@ -97,7 +97,7 @@ RSpec.describe MembersController, type: :controller do
         request.env["HTTP_ACCEPT"] = 'application/json'
       end
 
-      xit "member not found" do
+      it "member not found" do
         member = create(:member, campaign: @campaign)
         delete :destroy, params: {id: member.id}
         expect(response).to have_http_status(:success)
