@@ -21,6 +21,7 @@ class RaffleService
           results = {}
           members_list = @campaign.members
           friends_list = @campaign.members
+          i = 0
           break
         elsif friend != m and results[friend] != m
           results[m] = friend
@@ -31,4 +32,5 @@ class RaffleService
     end
     results
   end
+
 end
