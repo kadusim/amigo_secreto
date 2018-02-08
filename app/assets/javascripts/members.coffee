@@ -7,6 +7,21 @@ $(document).on 'turbolinks:load', ->
     if valid_email($( "#member_email" ).val()) && $( "#member_name" ).val() != ""
       $('.new_member').submit()
 
+  $('.member_change').change 'blur', (e) ->
+    $.ajax '/members/' + e.currentTarget.id,
+        type: 'PUT'
+        dataType: 'json',
+        data: { member: {
+                name: $(e.currentTarget).find('input[id=name_' + e.currentTarget.id + "]").val(),
+                email: $(e.currentTarget).find('input[id=email_' + e.currentTarget.id + "]").val(),
+                campaign_id: $("#member_campaign_id").val()
+              } }
+        success: (data, text, jqXHR) ->
+          Materialize.toast('Membro atualizado', 4000, 'green')
+        error: (jqXHR, textStatus, errorThrown) ->
+          Materialize.toast('Problema na atualização da Membro', 4000, 'red')
+    return false
+
   $('body').on 'click', 'a.remove_member', (e) ->
     $.ajax '/members/'+ e.currentTarget.id,
         type: 'DELETE'
@@ -31,9 +46,6 @@ $(document).on 'turbolinks:load', ->
           Materialize.toast('Membro adicionado', 4000, 'green')
         error: (jqXHR, textStatus, errorThrown) ->
           Materialize.toast('Problema na hora de incluir membro', 4000, 'red')
-          responseText = jQuery.parseJSON(jqXHR.responseText)
-          if responseText['email']
-            Materialize.toast(responseText['email'], 4000, 'red')
     return false
 
 
