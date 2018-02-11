@@ -7,21 +7,6 @@ $(document).on 'turbolinks:load', ->
     if valid_email($( "#member_email" ).val()) && $( "#member_name" ).val() != ""
       $('.new_member').submit()
 
-  $('.member_change').change 'blur', (e) ->
-    $.ajax '/members/' + e.currentTarget.id,
-        type: 'PUT'
-        dataType: 'json',
-        data: { member: {
-                name: $(e.currentTarget).find('input[id=name_' + e.currentTarget.id + "]").val(),
-                email: $(e.currentTarget).find('input[id=email_' + e.currentTarget.id + "]").val(),
-                campaign_id: $("#member_campaign_id").val()
-              } }
-        success: (data, text, jqXHR) ->
-          Materialize.toast('Membro atualizado', 4000, 'green')
-        error: (jqXHR, textStatus, errorThrown) ->
-          Materialize.toast('Problema na atualização da Membro', 4000, 'red')
-    return false
-
   $('body').on 'click', 'a.remove_member', (e) ->
     $.ajax '/members/'+ e.currentTarget.id,
         type: 'DELETE'
@@ -48,20 +33,34 @@ $(document).on 'turbolinks:load', ->
           Materialize.toast('Problema na hora de incluir membro', 4000, 'red')
     return false
 
+  $('.member_change').on 'change', 'div.member_id', (e) ->
+    $.ajax '/members/' + e.currentTarget.id,
+        type: 'PUT'
+        dataType: 'json',
+        data: { member: {
+                name: $("#name_" + e.currentTarget.id).val(),
+                email: $("#email_" + e.currentTarget.id).val(),
+                campaign_id: $('#campaign_id').val()
+              } }
+        success: (data, text, jqXHR) ->
+          Materialize.toast('Membro atualizado', 4000, 'green')
+        error: (jqXHR, textStatus, errorThrown) ->
+          Materialize.toast('Problema na atualização da Membro', 4000, 'red')
+    return false
 
 valid_email = (email) ->
   /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(email)
 
 insert_member = (id, name, email) ->
   $('.member_list').append(
-    '<div class="member" id="member_' + id + '">' +
-      '<div class="row">' +
+    '<div class="member_change" id="member_' + id + '">' +
+      '<div class="row" id="' + id + '">' +
         '<div class="col s12 m5 input-field">' +
-          '<input id="name" type="text" class="validate" value="' + name + '">' +
+          '<input id="name_' + id + '" type="text" class="validate" value="' + name + '">' +
           '<label for="name" class="active">Nome</label>' +
         '</div>' +
         '<div class="col s12 m5 input-field">' +
-          '<input id="email" type="email" class="validate" value="' + email + '">' +
+          '<input id="email_' + id + '" type="email" class="validate" value="' + email + '">' +
           '<label for="email" class="active" data-error="Formato incorreto">Email</label>' +
         '</div>' +
         '<div class="col s3 offset-s3 m1 input-field">' +

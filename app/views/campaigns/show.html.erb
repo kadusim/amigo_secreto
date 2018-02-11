@@ -51,9 +51,10 @@
           <div class="card-content col s12">
 
           <div class="member_list">
+            <input value="<%= @campaign.id %>" type="hidden" id="campaign_id">
             <% @campaign.members.each do |m| %>
-              <div class="member member_change" id="<%= m.id %>">
-                <div class="row">
+              <div class="member_change" id="member_<%= m.id %>">
+                <div class="row member_id" id="<%= m.id %>">
                   <div class="col s12 m5 input-field">
                     <input id="name_<%= m.id %>" type="text" class="validate" value="<%= m.name %>">
                     <label for="name" class="active">Nome</label>
